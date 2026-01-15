@@ -1,73 +1,28 @@
-# React + TypeScript + Vite
+# 💰 FinancePro - Smart Wealth Management
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+[![View Live Site](https://img.shields.io/badge/View_Live_Site-4F46E5?style=for-the-badge&logo=vercel&logoColor=white)](https://financepro-demo.vercel.app)
 
-Currently, two official plugins are available:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🚀 Overview
+**FinancePro** is a modern, hybrid personal finance application designed to help users track expenses, incomes, and budgets. 
 
-## React Compiler
+It features a unique **Hybrid Architecture**: users can start immediately in **Guest Mode** (data saved locally) and seamlessly upgrade to **Cloud Mode** (data synced to PostgreSQL via Supabase) by signing in. The UI is built with a trendy **Glassmorphism** design language, ensuring a premium user experience on both desktop and mobile.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## ✨ Key Features
 
-## Expanding the ESLint configuration
+-   **☁️ Hybrid Data Sync:** -   **Guest Mode:** Works offline, saves data to Browser LocalStorage.
+    -   **Cloud Mode:** Syncs data securely to the cloud when logged in.
+-   **🔐 Secure Authentication:** Username/Password login with Row Level Security (RLS) ensuring users only see their own data.
+-   **📊 Visual Analytics:** Interactive Pie Charts (Expense breakdown) and Bar Charts (Monthly cash flow).
+-   **💸 Smart Budgeting:** Visual budget tracker with "Safe to Spend" indicators.
+-   **🎨 Modern UI:** Fully responsive Glassmorphism design with Dark/Light mode support.
+-   **📂 Data Management:** Filter, Search, Sort, and Export transactions to CSV.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 🛠️ Tech Stack
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+-   **Frontend:** React, TypeScript, Vite
+-   **Styling:** CSS3 (Variables, Glassmorphism effects), Lucide React (Icons)
+-   **Backend/DB:** Supabase (PostgreSQL, Auth)
+-   **Visualization:** Recharts
+-   **Routing:** React Router DOM
+-   **Notifications:** React Hot Toast
