@@ -1,14 +1,19 @@
+
 {
+  "homepage": "https://umidjon0339.github.io/FinancePro-WebApp",
+
   "name": "expense-tracker",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
-    "lint": "eslint .",
-    "preview": "vite preview"
-  },
+  "dev": "vite",
+  "build": "vite build",
+  "lint": "eslint .",
+  "preview": "vite preview",
+  "predeploy": "npm run build",
+  "deploy": "gh-pages -d dist"
+},
   "dependencies": {
     "@supabase/supabase-js": "^2.90.1",
     "framer-motion": "^12.26.2",
