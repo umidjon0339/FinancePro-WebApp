@@ -7,9 +7,16 @@ import {
 } from "lucide-react";
 import type { Expense, Category, TransactionType, ChartData, MonthlyData } from "./types";
 import { EXPENSE_CATEGORIES, INCOME_CATEGORIES, formatCurrency, formatDate } from "./utils";
+import { 
+     Calendar, Tag, Type, DollarSign 
+  } from "lucide-react";
 
-// --- 1. Filter Bar ---
-interface FilterBarProps {
+  import { 
+    RotateCcw
+  } from "lucide-react";
+  
+  // --- 1. Filter Bar (Single Line) ---
+  interface FilterBarProps {
     search: string;
     setSearch: (val: string) => void;
     filterType: "all" | "income" | "expense";
@@ -18,133 +25,250 @@ interface FilterBarProps {
     setSortOrder: (val: "newest" | "oldest" | "highest") => void;
   }
   
-  export const FilterBar = ({ search, setSearch, filterType, setFilterType, sortOrder, setSortOrder }: FilterBarProps) => (
-    <div className="flex gap-3 mb-6 w-full">
-      {/* Search Input (Takes up 2x space) */}
-      <div className="relative" style={{ flex: 2 }}>
-        <Search size={18} className="absolute left-3 top-3.5 text-gray-400" />
-        <input 
-          type="text" 
-          placeholder="Search..." 
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="modern-input"
-          style={{ paddingLeft: '38px', width: '100%' }}
-        />
-      </div>
+  export const FilterBar = ({ 
+    search, setSearch, filterType, setFilterType, sortOrder, setSortOrder 
+  }: FilterBarProps) => {
+    
+    const isFiltered = search !== "" || filterType !== "all" || sortOrder !== "newest";
   
-      {/* Filter Dropdown (Takes up 1x space) */}
-      <div className="relative" style={{ flex: 1 }}>
-        <Filter size={16} className="absolute left-3 top-3.5 text-gray-400" />
-        <select 
-          value={filterType} 
-          onChange={(e) => setFilterType(e.target.value as any)} 
-          className="modern-select" 
-          style={{ paddingLeft: '34px', width: '100%' }}
-        >
-          <option value="all">All</option>
-          <option value="income">Income</option>
-          <option value="expense">Expense</option>
-        </select>
-      </div>
+    const handleReset = () => {
+      setSearch("");
+      setFilterType("all");
+      setSortOrder("newest");
+    };
   
-      {/* Sort Dropdown (Takes up 1x space) */}
-      <div className="relative" style={{ flex: 1 }}>
-        <ArrowDownUp size={16} className="absolute left-3 top-3.5 text-gray-400" />
-        <select 
-          value={sortOrder} 
-          onChange={(e) => setSortOrder(e.target.value as any)} 
-          className="modern-select" 
-          style={{ paddingLeft: '34px', width: '100%' }}
-        >
-          <option value="newest">Newest</option>
-          <option value="oldest">Oldest</option>
-          <option value="highest">Highest</option>
-        </select>
-      </div>
-    </div>
-  );
-
-// --- 2. Form ---
-interface ExpenseFormProps {
-  onSave: (expense: Expense) => void;
-  editingExpense: Expense | null;
-  cancelEdit: () => void;
-}
-
-export const ExpenseForm = ({ onSave, editingExpense, cancelEdit }: ExpenseFormProps) => {
-  const [title, setTitle] = useState("");
-  const [amount, setAmount] = useState("");
-  const [type, setType] = useState<TransactionType>("expense");
-  const [category, setCategory] = useState<Category>("Food");
-  const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
-
-  useEffect(() => {
-    if (editingExpense) {
-      setTitle(editingExpense.title);
-      setAmount(editingExpense.amount.toString());
-      setType(editingExpense.type);
-      setCategory(editingExpense.category);
-      setDate(editingExpense.date);
-    }
-  }, [editingExpense]);
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!title || !amount) return;
-    onSave({
-      id: editingExpense ? editingExpense.id : crypto.randomUUID(),
-      title,
-      amount: parseFloat(amount),
-      type,
-      category,
-      date
-    });
-    if (!editingExpense) {
-      setTitle("");
-      setAmount("");
-      setDate(new Date().toISOString().split('T')[0]);
-    }
-  };
-
-  const categories = type === "expense" ? EXPENSE_CATEGORIES : INCOME_CATEGORIES;
-
-  return (
-    <div className="card">
-      <div className="flex-between mb-4">
-        <h3>{editingExpense ? "Edit Transaction" : "New Entry"}</h3>
-        {editingExpense && <button onClick={cancelEdit} className="btn-icon-only"><X size={18} /></button>}
-      </div>
-
-      <form onSubmit={handleSubmit} className="flex-col">
-        <div className="type-toggle">
-          <button type="button" className={`type-btn ${type === "expense" ? "active expense" : ""}`} onClick={() => { setType("expense"); setCategory("Food"); }}>Expense</button>
-          <button type="button" className={`type-btn ${type === "income" ? "active income" : ""}`} onClick={() => { setType("income"); setCategory("Salary"); }}>Income</button>
+    return (
+      <div className="filter-container">
+        
+        {/* 1. Search Field (Flexible Width) */}
+        <div className="relative" style={{ flexGrow: 1 }}>
+          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+          <input 
+            type="text" 
+            placeholder="Search..." 
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="filter-input"
+          />
+          {search && (
+            <button 
+              onClick={() => setSearch("")}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+            >
+              <X size={14} />
+            </button>
+          )}
         </div>
-
-        <input type="text" placeholder="Title (e.g. Groceries)" value={title} onChange={e => setTitle(e.target.value)} required className="modern-input" />
-
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-          <input type="number" placeholder="0.00" value={amount} onChange={e => setAmount(e.target.value)} required className="modern-input" />
-          <input type="date" value={date} onChange={e => setDate(e.target.value)} required className="modern-input" />
-        </div>
-
-        <div className="relative">
-          <select value={category} onChange={e => setCategory(e.target.value as Category)} className="modern-select appearance-none">
-            {categories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
+  
+        {/* 2. Type Filter (Fixed Min-Width) */}
+        <div className="relative shrink-0">
+          <Filter size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+          <select 
+            value={filterType} 
+            onChange={(e) => setFilterType(e.target.value as any)} 
+            className="filter-select"
+          >
+            <option value="all">All</option>
+            <option value="income">Income</option>
+            <option value="expense">Expense</option>
           </select>
-          <ChevronDown size={16} className="absolute right-3 top-3.5 pointer-events-none text-gray-500" />
+          <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
         </div>
-
-        <motion.button whileTap={{ scale: 0.98 }} type="submit" className="btn btn-primary w-full">
-          {editingExpense ? <Check size={18}/> : <Plus size={18}/>}
-          {editingExpense ? "Update" : "Add Transaction"}
-        </motion.button>
-      </form>
-    </div>
-  );
-};
-
+  
+        {/* 3. Sort Filter (Fixed Min-Width) */}
+        <div className="relative shrink-0">
+          <ArrowDownUp size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+          <select 
+            value={sortOrder} 
+            onChange={(e) => setSortOrder(e.target.value as any)} 
+            className="filter-select"
+          >
+            <option value="newest">Newest</option>
+            <option value="oldest">Oldest</option>
+            <option value="highest">Highest</option>
+          </select>
+          <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+        </div>
+  
+        {/* 4. Reset Button */}
+        {isFiltered && (
+          <button 
+            onClick={handleReset}
+            className="filter-reset-btn shrink-0"
+            title="Reset Filters"
+          >
+            <RotateCcw size={16} />
+          </button>
+        )}
+      </div>
+    );
+  };
+  
+  // --- 2. Professional Compact Form ---
+  interface ExpenseFormProps {
+    onSave: (expense: Expense) => void;
+    editingExpense: Expense | null;
+    cancelEdit: () => void;
+  }
+  
+  export const ExpenseForm = ({ onSave, editingExpense, cancelEdit }: ExpenseFormProps) => {
+    const [title, setTitle] = useState("");
+    const [amount, setAmount] = useState("");
+    const [type, setType] = useState<TransactionType>("expense");
+    const [category, setCategory] = useState<Category>("Food");
+    const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
+  
+    useEffect(() => {
+      if (editingExpense) {
+        setTitle(editingExpense.title);
+        setAmount(editingExpense.amount.toString());
+        setType(editingExpense.type);
+        setCategory(editingExpense.category);
+        setDate(editingExpense.date);
+      }
+    }, [editingExpense]);
+  
+    const handleSubmit = (e: React.FormEvent) => {
+      e.preventDefault();
+      if (!title || !amount) return;
+      onSave({
+        id: editingExpense ? editingExpense.id : crypto.randomUUID(),
+        title,
+        amount: parseFloat(amount),
+        type,
+        category,
+        date
+      });
+      if (!editingExpense) {
+        setTitle("");
+        setAmount("");
+        setDate(new Date().toISOString().split('T')[0]);
+      }
+    };
+  
+    const categories = type === "expense" ? EXPENSE_CATEGORIES : INCOME_CATEGORIES;
+  
+    // Common input style for compact height
+    const compactInputStyle = { padding: '10px 12px 10px 38px', fontSize: '0.9rem' };
+  
+    return (
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4 }}
+        className="card h-fit"
+        style={{ padding: '20px' }} // Slightly reduced card padding
+      >
+        {/* Header */}
+        <div className="flex-between mb-3">
+          <h3 className="text-base font-bold text-primary flex items-center gap-2 m-0">
+            {editingExpense ? <Edit2 size={16} /> : <Plus size={16} />}
+            {editingExpense ? "Edit Transaction" : "New Entry"}
+          </h3>
+          {editingExpense && (
+            <button 
+              onClick={cancelEdit} 
+              className="btn-icon-only text-gray-400 hover:text-danger hover:bg-red-50 p-1"
+              title="Cancel Edit"
+            >
+              <X size={16} />
+            </button>
+          )}
+        </div>
+  
+        <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+          
+          {/* Type Toggle (Compact Margin) */}
+          <div className="type-toggle" style={{ marginBottom: '8px', padding: '3px' }}>
+            <button 
+              type="button" 
+              className={`type-btn ${type === "expense" ? "active expense" : ""}`} 
+              onClick={() => { setType("expense"); setCategory("Food"); }}
+              style={{ padding: '8px', fontSize: '0.85rem' }}
+            >
+              Expense
+            </button>
+            <button 
+              type="button" 
+              className={`type-btn ${type === "income" ? "active income" : ""}`} 
+              onClick={() => { setType("income"); setCategory("Salary"); }}
+              style={{ padding: '8px', fontSize: '0.85rem' }}
+            >
+              Income
+            </button>
+          </div>
+  
+          {/* Title Input */}
+          <div className="relative group">
+            <Type size={15} className="absolute left-3 top-3 text-gray-400 group-focus-within:text-primary transition-colors" />
+            <input 
+              type="text" 
+              placeholder="Title (e.g. Groceries)" 
+              value={title} 
+              onChange={e => setTitle(e.target.value)} 
+              required 
+              className="modern-input"
+              style={compactInputStyle}
+            />
+          </div>
+  
+          {/* Row: Amount & Date */}
+          <div className="grid grid-cols-2 gap-3">
+            <div className="relative group">
+              <DollarSign size={15} className="absolute left-3 top-3 text-gray-400 group-focus-within:text-primary transition-colors" />
+              <input 
+                type="number" 
+                placeholder="0.00" 
+                value={amount} 
+                onChange={e => setAmount(e.target.value)} 
+                required 
+                className="modern-input"
+                style={compactInputStyle}
+              />
+            </div>
+            
+            <div className="relative group">
+              <Calendar size={15} className="absolute left-3 top-3 text-gray-400 group-focus-within:text-primary transition-colors" />
+              <input 
+                type="date" 
+                value={date} 
+                onChange={e => setDate(e.target.value)} 
+                required 
+                className="modern-input"
+                style={compactInputStyle}
+              />
+            </div>
+          </div>
+  
+          {/* Category Select */}
+          <div className="relative group">
+            <Tag size={15} className="absolute left-3 top-3 text-gray-400 group-focus-within:text-primary transition-colors" />
+            <select 
+              value={category} 
+              onChange={e => setCategory(e.target.value as Category)} 
+              className="modern-select appearance-none"
+              style={compactInputStyle}
+            >
+              {categories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
+            </select>
+            <ChevronDown size={15} className="absolute right-3 top-3 pointer-events-none text-gray-400" />
+          </div>
+  
+          {/* Submit Button */}
+          <motion.button 
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            type="submit" 
+            className="btn btn-primary w-full mt-1 py-2.5 shadow-md text-sm"
+          >
+            {editingExpense ? <Check size={16}/> : <Plus size={16}/>}
+            {editingExpense ? "Update" : "Add Transaction"}
+          </motion.button>
+  
+        </form>
+      </motion.div>
+    );
+  };
 // --- 3. Dashboard ---
 interface DashboardProps {
   balance: { income: number; expense: number; balance: number };

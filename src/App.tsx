@@ -114,10 +114,20 @@ function App() {
       <Toaster position="bottom-center" toastOptions={{ style: { background: 'var(--card-bg)', color: 'var(--text-primary)', backdropFilter: 'blur(10px)' }}} />
       
       {/* PROFESSIONAL HEADER */}
+      {/* PROFESSIONAL HEADER */}
       <header className="compact-header flex-between">
         {/* Logo Section */}
-        <div className="flex-row">
-          <div style={{ background: 'var(--primary)', padding: '8px', borderRadius: '10px', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 8px rgba(79, 70, 229, 0.3)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <div style={{ 
+            background: 'var(--primary)', 
+            padding: '8px', 
+            borderRadius: '10px', 
+            color: 'white', 
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'center', 
+            boxShadow: '0 2px 8px rgba(79, 70, 229, 0.3)' 
+          }}>
             <LayoutDashboard size={20} />
           </div>
           <h1 style={{ fontSize: '1.5rem', fontWeight: '800', letterSpacing: '-0.02em', margin: 0 }}>
@@ -125,10 +135,15 @@ function App() {
           </h1>
         </div>
 
-        {/* Unified Button Row */}
-        <div className="flex-row" style={{ gap: '12px' }}>
+        {/* Unified Button Row - STRICTLY ONE LINE */}
+        <div style={{ 
+          display: 'flex', 
+          alignItems: 'center', 
+          gap: '12px', 
+          flexWrap: 'nowrap' /* Prevents wrapping */ 
+        }}>
           
-          {/* Utility Buttons (Icon Only) */}
+          {/* Utility Buttons */}
           <button onClick={() => exportToCSV(expenses)} className="btn-icon-only" title="Export CSV">
             <Download size={18} />
           </button>
@@ -137,22 +152,28 @@ function App() {
             {theme === "light" ? <Moon size={18} /> : <Sun size={18} />}
           </button>
           
+          {/* Divider */}
           <div style={{ width: '1px', height: '24px', background: 'var(--text-secondary)', opacity: 0.2 }}></div>
 
           {/* User Actions */}
           {session ? (
             <>
-              {/* Profile Button (Primary) */}
               <button 
                 onClick={() => navigate('/profile')} 
                 className="btn btn-primary" 
-                style={{ padding: '8px 16px', borderRadius: '10px' }}
+                style={{ 
+                  padding: '8px 16px', 
+                  borderRadius: '10px',
+                  whiteSpace: 'nowrap', /* Prevents text wrapping */
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px'
+                }}
               >
                 <UserCircle size={18} />
-                <span className="hidden sm:inline ml-1">Profile</span>
+                <span className="hidden sm:inline">Profile</span>
               </button>
 
-              {/* Logout Button (Destructive/Icon) */}
               <button 
                 onClick={handleLogout} 
                 className="btn-icon-only text-danger" 
@@ -166,9 +187,15 @@ function App() {
             <button 
               onClick={() => navigate('/auth')} 
               className="btn btn-primary" 
-              style={{ padding: '8px 16px' }}
+              style={{ 
+                padding: '8px 16px',
+                whiteSpace: 'nowrap',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px'
+              }}
             >
-              <LogIn size={18} /> <span className="ml-1">Sign In</span>
+              <LogIn size={18} /> <span>Sign In</span>
             </button>
           )}
         </div>
