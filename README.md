@@ -1,6 +1,6 @@
 # 💰 FinancePro - Smart Wealth Management
 
-[![View Live Site](https://img.shields.io/badge/View_Live_Site-4F46E5?style=for-the-badge&logo=vercel&logoColor=white)](https://financepro-demo.vercel.app)
+[![View Live Site](https://img.shields.io/badge/View_Live_Site-4F46E5?style=for-the-badge&logo=vercel&logoColor=white)]([https://financepro-demo.vercel.app](https://umidjon0339.github.io/FinancePro-WebApp/))
 
 
 ## 🚀 Overview
